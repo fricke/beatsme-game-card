@@ -1,0 +1,68 @@
+<link rel="import" href="../core-ajax/core-ajax.html">
+
+<polymer-element
+  name="beatsme-game-card"
+  attributes="clientId trackId selectedAlbum">
+  <template>
+    <style>
+      .chip {
+        display: inline-block;
+        position: relative;
+        border-radius: 3px;
+        margin: 4px;
+        overflow: hidden;
+        text-align: start;
+        background-color: #fff;
+        box-shadow: 0 2px 10px 0 rgba(0, 0, 0, 0.16);
+      }
+
+      .chip-top {
+        width: 200px;
+        height: 200px;
+      }
+
+      .chip-bottom {
+        padding: 8px;
+        line-height: 1.5;
+      }
+
+      .chip-album-title {
+        font-weight: bold;
+      }
+    </style>
+
+    <core-ajax
+      auto url="/music/tracks/{{ trackId }}"
+      handleAs="json"
+      on-core-response="{{ handleDataResponse }}">
+    </core-ajax>
+
+    <div class="chip" hero-id="{{track.artist_display_name}}-{{ album.display }}" hero?="{{  }}">
+      <div
+        class="chip-top"
+        style="background:url('{{ album.cover }}/default?client_id={{ clientId }}');"></div>
+      <div class="chip-bottom">
+        <div class="chip-album-title">{{ album.display }}</div>
+        <div class="chip-artist">{{ track.artist_display_name }}</div>
+      </div>
+    </div>
+  </template>
+  <script type="text/javascript">
+    Polymer('beatsme-game-card', {
+      track: null,
+      album: null,
+      artists: null,
+      handleDataResponse: function(event, response) {
+        var cover = [];
+        this.track = response.response.data.data;
+        this.album = this.track.refs.album;
+        cover.push('https://partner.api.beatsmusic.com/v1/api/albums/');
+        cover.push(this.album.id);
+        cover.push('/images');
+        this.album.cover = cover.join("");
+        this.artists = this.track.refs.artists;
+      }
+    });
+  </script>
+
+</polymer-element>
