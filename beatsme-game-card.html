@@ -2,7 +2,7 @@
 
 <polymer-element
   name="beatsme-game-card"
-  attributes="clientId trackId selectedAlbum">
+  attributes="clientId trackId selectedAlbum type">
   <template>
     <style>
       .chip {
@@ -14,6 +14,7 @@
         text-align: start;
         background-color: #fff;
         box-shadow: 0 2px 10px 0 rgba(0, 0, 0, 0.16);
+        cursor: pointer;
       }
 
       .chip-top {
@@ -53,13 +54,15 @@
       album: null,
       artists: null,
       handleDataResponse: function(event, response) {
-        var cover = [];
+        var cover = [],
+            album = {};
         this.track = response.response.data.data;
-        this.album = this.track.refs.album;
+        album = this.track.refs.album;
         cover.push('https://partner.api.beatsmusic.com/v1/api/albums/');
-        cover.push(this.album.id);
+        cover.push(album.id);
         cover.push('/images');
-        this.album.cover = cover.join("");
+        album.cover = cover.join("");
+        this.album = album;
         this.artists = this.track.refs.artists;
       }
     });
